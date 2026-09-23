@@ -39,8 +39,33 @@ a {
   height: 100dvh;
   width: 100%;
   display: flex;
+  flex-direction: column;
   position: relative;
   background: #111;
+  overflow: hidden;
+}
+.display-header {
+  flex: 0 0 8%;
+  min-height: 0;
+  padding: 1% 1.5%;
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  color: #1b3444;
+  border-bottom: 1px solid #dce5eb;
+}
+.display-header h1 {
+  margin: 0;
+  font-family: inherit;
+  font-size: clamp(1.4rem, 2.2vw, 2.75rem);
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.display-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
   overflow: hidden;
 }
 .presentation-pane {
@@ -48,7 +73,15 @@ a {
   flex: 1;
   min-width: 0;
   height: 100%;
+  background: #111;
   transition: width 0.65s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.presentation-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #111;
 }
 .display-sidebar {
   height: 100%;
@@ -58,15 +91,21 @@ a {
   background: #fff;
   border-right: clamp(8px, 0.7vw, 14px) solid #2b2b2b;
 }
+.is-preview .display-header {
+  padding: 1% 1.5%;
+}
+.is-preview .display-header h1 {
+  font-size: clamp(0.45rem, 1.1vw, 1rem);
+}
 .slide-player {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #111;
+  background: transparent;
   overflow: hidden;
 }
 .slide-player-empty {
-  background: linear-gradient(135deg, #171717, #222);
+  background: transparent;
 }
 .slide {
   position: absolute;
@@ -74,6 +113,7 @@ a {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  object-position: center bottom;
   opacity: 0;
   transition-property: opacity;
   transition-timing-function: ease;
@@ -836,9 +876,9 @@ a:focus-visible {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #111;
+  background: transparent;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
 }
 .pptx-player > div {
@@ -849,7 +889,7 @@ a:focus-visible {
   box-shadow: none !important;
 }
 .pptx-player-failed {
-  background: linear-gradient(135deg, #171717, #222);
+  background: transparent;
 }
 .presentation-upload {
   border: 1px dashed #9e9b94;

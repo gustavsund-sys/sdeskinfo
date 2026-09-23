@@ -5,12 +5,6 @@ import { activeAt } from "../lib/time";
 import { SlidePlayer } from "./SlidePlayer";
 import { PptxPlayer } from "./PptxPlayer";
 import { OpeningHoursPanel } from "./OpeningHoursPanel";
-const labels = {
-  information: "Information",
-  warning: "Observera",
-  closed: "Stängt",
-  maintenance: "Underhåll",
-};
 export function DisplayCanvas({
   settings,
   messages,
@@ -55,60 +49,62 @@ export function DisplayCanvas({
     <main
       className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""}`}
     >
-      <aside className="display-sidebar" style={{ width: `${width}%` }}>
-        {message ? (
-          <section
-            className={`info-panel priority-${message.priority} type-${message.type}`}
-            aria-live="polite"
-          >
-            <div className="info-eyebrow">
-              <span>Information från Service desk</span>
-              <span>{labels[message.type]}</span>
-            </div>
-            <div className="info-copy">
-              <h1>{message.title}</h1>
-              <p>{message.body}</p>
-            </div>
-            <footer>
-              <span>
-                {message.priority === "urgent"
-                  ? "Brådskande information"
-                  : message.priority === "important"
-                    ? "Viktig information"
-                    : "Service desk"}
-              </span>
-              {active.length > 1 && (
+      <header className="display-header">
+        <h1>Information från Service desk</h1>
+      </header>
+      <div className="display-content">
+        <aside className="display-sidebar" style={{ width: `${width}%` }}>
+          {message ? (
+            <section
+              className={`info-panel priority-${message.priority} type-${message.type}`}
+              aria-live="polite"
+            >
+              <div className="info-copy">
+                <h1>{message.title}</h1>
+                <p>{message.body}</p>
+              </div>
+              <footer>
                 <span>
-                  {messageIndex + 1} / {active.length}
+                  {message.priority === "urgent"
+                    ? "Brådskande information"
+                    : message.priority === "important"
+                      ? "Viktig information"
+                      : "Service desk"}
                 </span>
-              )}
-            </footer>
-          </section>
-        ) : (
-          <section
-            className="info-panel info-panel-empty"
-            aria-label="Ingen aktuell information"
-          >
-            <div className="info-eyebrow"><span>Information från Service desk</span></div>
-            <Info className="empty-info-icon" aria-hidden="true" />
-          </section>
-        )}
-        <OpeningHoursPanel hours={settings.openingHours} now={now} />
-      </aside>
-      <section className="presentation-pane">
-        {settings.presentationId ? (
-          <PptxPlayer
-            presentationId={settings.presentationId}
-            duration={settings.slideDuration}
-          />
-        ) : (
-          <SlidePlayer
-            slides={settings.slides}
-            duration={settings.slideDuration}
-            transition={settings.transitionDuration}
-          />
-        )}
-      </section>
+                {active.length > 1 && (
+                  <span>
+                    {messageIndex + 1} / {active.length}
+                  </span>
+                )}
+              </footer>
+            </section>
+          ) : (
+            <section
+              className="info-panel info-panel-empty"
+              aria-label="Ingen aktuell information"
+            >
+              <Info className="empty-info-icon" aria-hidden="true" />
+            </section>
+          )}
+          <OpeningHoursPanel hours={settings.openingHours} now={now} />
+        </aside>
+        <section className="presentation-pane">
+        <div className="presentation-stage">
+          {settings.presentationId ? (
+            <PptxPlayer
+              presentationId={settings.presentationId}
+              duration={settings.slideDuration}
+            />
+          ) : (
+            <SlidePlayer
+              slides={settings.slides}
+              duration={settings.slideDuration}
+              transition={settings.transitionDuration}
+            />
+          )}
+        </div>
+        </section>
+      </div>
     </main>
   );
 }
