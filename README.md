@@ -70,7 +70,7 @@ Publicera alltid reglerna tillsammans med appen. Firebase API-nyckeln ska inte a
 
 ## Presentation och slides
 
-Under **Admin → Inställningar** kan administratören välja en `.pptx`-fil direkt. Appen delar filen i Firestore-säkra delar, laddar upp dem, byter aktiv presentation först när hela filen är färdig och tar därefter bort den tidigare versionen. Maximal filstorlek är 25 MB. Displayen hämtar delarna och renderar PowerPoint-presentationen direkt i webbläsaren.
+Under **Admin → Presentation** kan administratören välja en `.pptx`-fil direkt. Appen delar filen i Firestore-säkra delar, laddar upp dem, byter aktiv presentation först när hela filen är färdig och tar därefter bort den tidigare versionen. Maximal filstorlek är 25 MB. Displayen hämtar delarna och renderar PowerPoint-presentationen direkt i webbläsaren.
 
 Presentationen spelas automatiskt i loop med den konfigurerade slide-tiden och skalas med `contain` så att inget beskärs. Om ingen presentation är uppladdad visas en neutral, textfri bakgrund. Publika bild-URL:er finns kvar som ett avancerat reservläge.
 
@@ -79,7 +79,7 @@ Presentationen spelas automatiskt i loop med den konfigurerade slide-tiden och s
 - `/display`: öppnas i helskärm på informationsskärmen. Inga reglage visas.
 - `/admin`: logga in, se skärmstatus, aktiva och kommande meddelanden.
 - `/admin/new`: förhandsvisa, schemalägg eller publicera direkt i 30 minuter, 1 timme, resten av dagen eller till egen sluttid/tills vidare.
-- `/admin/settings`: ladda upp PowerPoint, ändra tider och panelbredd samt se liveförhandsvisning.
+- `/admin/settings`: sidan **Presentation**, där PowerPoint laddas upp och tider samt panelbredd ändras med liveförhandsvisning.
 
 Flera aktiva meddelanden roterar. `important` får en tydligare markering och `urgent` använder 65 procent av skärmen. När sista meddelandet löper ut återgår presentationen mjukt till helskärm.
 
