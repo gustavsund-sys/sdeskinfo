@@ -62,7 +62,7 @@ export function DisplayCanvas({
             aria-live="polite"
           >
             <div className="info-eyebrow">
-              <span>Info från Service desk</span>
+              <span>Information från Service desk</span>
               <span>{labels[message.type]}</span>
             </div>
             <div className="info-copy">
@@ -89,6 +89,7 @@ export function DisplayCanvas({
             className="info-panel info-panel-empty"
             aria-label="Ingen aktuell information"
           >
+            <div className="info-eyebrow"><span>Information från Service desk</span></div>
             <Info className="empty-info-icon" aria-hidden="true" />
           </section>
         )}
