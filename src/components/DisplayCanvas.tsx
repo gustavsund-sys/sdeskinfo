@@ -60,20 +60,13 @@ export function DisplayCanvas({
                 <h1>{message.title}</h1>
                 <p>{message.body}</p>
               </div>
-              <footer>
-                <span>
-                  {message.priority === "urgent"
-                    ? "Brådskande information"
-                    : message.priority === "important"
-                      ? "Viktig information"
-                      : "Service desk"}
-                </span>
-                {active.length > 1 && (
+              {active.length > 1 && (
+                <footer>
                   <span>
                     {messageIndex + 1} / {active.length}
                   </span>
-                )}
-              </footer>
+                </footer>
+              )}
             </section>
           ) : (
             <section
