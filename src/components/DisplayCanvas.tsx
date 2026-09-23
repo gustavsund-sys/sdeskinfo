@@ -49,9 +49,6 @@ export function DisplayCanvas({
     <main
       className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""}`}
     >
-      <header className="display-header">
-        <h1>Information från Service desk</h1>
-      </header>
       <div className="display-content">
         <aside className="display-sidebar" style={{ width: `${width}%` }}>
           {message ? (
@@ -89,20 +86,20 @@ export function DisplayCanvas({
           <OpeningHoursPanel hours={settings.openingHours} now={now} />
         </aside>
         <section className="presentation-pane">
-        <div className="presentation-stage">
-          {settings.presentationId ? (
-            <PptxPlayer
-              presentationId={settings.presentationId}
-              duration={settings.slideDuration}
-            />
-          ) : (
-            <SlidePlayer
-              slides={settings.slides}
-              duration={settings.slideDuration}
-              transition={settings.transitionDuration}
-            />
-          )}
-        </div>
+          <div className="presentation-stage">
+            {settings.presentationId ? (
+              <PptxPlayer
+                presentationId={settings.presentationId}
+                duration={settings.slideDuration}
+              />
+            ) : (
+              <SlidePlayer
+                slides={settings.slides}
+                duration={settings.slideDuration}
+                transition={settings.transitionDuration}
+              />
+            )}
+          </div>
         </section>
       </div>
     </main>

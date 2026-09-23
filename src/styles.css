@@ -44,24 +44,6 @@ a {
   background: #111;
   overflow: hidden;
 }
-.display-header {
-  flex: 0 0 14%;
-  min-height: 0;
-  padding: 1% 1.5%;
-  display: flex;
-  align-items: flex-start;
-  background: #fff;
-  color: #1b3444;
-  border-bottom: 1px solid #dce5eb;
-}
-.display-header h1 {
-  margin: 0;
-  font-family: inherit;
-  font-size: clamp(2.8rem, 4.4vw, 5.5rem);
-  font-weight: 750;
-  line-height: 1;
-  letter-spacing: -0.035em;
-}
 .display-content {
   flex: 1;
   min-height: 0;
@@ -90,12 +72,6 @@ a {
   flex-direction: column;
   background: #fff;
   border-right: clamp(8px, 0.7vw, 14px) solid #2b2b2b;
-}
-.is-preview .display-header {
-  padding: 1% 1.5%;
-}
-.is-preview .display-header h1 {
-  font-size: clamp(0.9rem, 2.2vw, 2rem);
 }
 .slide-player {
   position: relative;
