@@ -700,7 +700,7 @@ function OpeningHoursEditor({
   );
 }
 function SettingsPage() {
-  const { settings } = useDisplayData();
+  const { settings, messages } = useDisplayData();
   const [form, setForm] = useState<DisplaySettings>(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -899,7 +899,7 @@ function SettingsPage() {
             <span>16:9</span>
           </div>
           <div className="preview-frame">
-            <DisplayCanvas settings={form} messages={[]} preview />
+            <DisplayCanvas settings={form} messages={messages} preview />
           </div>
         </aside>
       </div>
