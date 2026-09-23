@@ -7,6 +7,14 @@ service cloud.firestore {
     }
     match /settings/display { allow read: if true; allow write: if isAdmin(); }
     match /messages/{messageId} { allow read: if true; allow create, update, delete: if isAdmin(); }
+    match /presentations/{presentationId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+      match /chunks/{chunkId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+    }
     match /displayStatus/main {
       allow read: if isAdmin();
       allow create, update: if request.resource.data.keys().hasOnly(['lastSeen','version'])

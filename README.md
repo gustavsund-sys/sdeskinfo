@@ -54,6 +54,8 @@ Adminformuläret visar endast lösenordsfältet. Firebase kräver fortfarande en
   "transitionDuration": 800,
   "messageRotationTime": 10,
   "infoPanelWidth": 34,
+  "presentationId": "",
+  "presentationName": "",
   "slides": []
 }
 ```
@@ -68,16 +70,16 @@ Publicera alltid reglerna tillsammans med appen. Firebase API-nyckeln ska inte a
 
 ## Presentation och slides
 
-V1 visar slides som bilder. Lägg egna PNG-, JPG-, WebP- eller SVG-filer i `public/slides/`, bygg och distribuera, och ange sedan en publik URL per rad under **Admin → Inställningar**. Exempel: `/slides/min-slide.png`. Externa HTTPS-URL:er kan också användas om deras server tillåter det.
+Under **Admin → Inställningar** kan administratören välja en `.pptx`-fil direkt. Appen delar filen i Firestore-säkra delar, laddar upp dem, byter aktiv presentation först när hela filen är färdig och tar därefter bort den tidigare versionen. Maximal filstorlek är 25 MB. Displayen hämtar delarna och renderar PowerPoint-presentationen direkt i webbläsaren.
 
-Spelaren använder `object-fit: contain`, förladdar nästa bild och går vidare om en bild inte kan läsas. Om inga slides är konfigurerade visas en neutral, textfri bakgrund. Denna frikoppling gör att PDF/PPTX-import senare kan konvertera sidor till bild-URL:er utan att själva spelaren behöver göras om.
+Presentationen spelas automatiskt i loop med den konfigurerade slide-tiden och skalas med `contain` så att inget beskärs. Om ingen presentation är uppladdad visas en neutral, textfri bakgrund. Publika bild-URL:er finns kvar som ett avancerat reservläge.
 
 ## Användning
 
 - `/display`: öppnas i helskärm på informationsskärmen. Inga reglage visas.
 - `/admin`: logga in, se skärmstatus, aktiva och kommande meddelanden.
 - `/admin/new`: förhandsvisa, schemalägg eller publicera direkt i 30 minuter, 1 timme, resten av dagen eller till egen sluttid/tills vidare.
-- `/admin/settings`: ändra tider, panelbredd och slides med liveförhandsvisning.
+- `/admin/settings`: ladda upp PowerPoint, ändra tider och panelbredd samt se liveförhandsvisning.
 
 Flera aktiva meddelanden roterar. `important` får en tydligare markering och `urgent` använder 65 procent av skärmen. När sista meddelandet löper ut återgår presentationen mjukt till helskärm.
 
