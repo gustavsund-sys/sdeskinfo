@@ -8,7 +8,7 @@ En robust informationsskärm för Service desk vid Örebro universitet. Den publ
 - Firebase Authentication med e-post/lösenord för administratörer
 - Cloud Firestore för inställningar, meddelanden och skärmens heartbeat
 - Firestore persistent lokal cache för fortsatt drift vid nätavbrott
-- Firebase Hosting med SPA-rewrite för direktlänkar
+- GitHub Pages med automatisk publicering från `main`
 - Samma `DisplayCanvas` används av både `/display` och adminförhandsvisningen
 
 Tider sparas som Firestore `Timestamp`. Webbläsarens `datetime-local` konverteras till en absolut tidpunkt och presentationen formaterar svensk tid med `Europe/Stockholm`, vilket gör schemaläggningen robust även vid sommar- och vintertid.
@@ -85,22 +85,18 @@ Flera aktiva meddelanden roterar. `important` får en tydligare markering och `u
 
 Tre lokala exempel finns i `src/lib/demo.ts` för komponentutveckling och tester. De används inte automatiskt i produktion; produktionsdata kommer alltid från Firestore. Presentationen innehåller inga exempelbudskap i produktionsläget.
 
-## Driftsättning till Firebase Hosting
+## Driftsättning till GitHub Pages
 
-Installera Firebase CLI och logga in:
+Workflow-filen `.github/workflows/deploy-pages.yml` testar, bygger och publicerar appen automatiskt när `main` uppdateras. GitHub Pages ska använda **GitHub Actions** som källa under repositoryts **Settings → Pages**.
 
-```bash
-npm install -g firebase-tools
-firebase login
-npm run build
-firebase deploy
-```
+- Display: `https://gustavsund-sys.github.io/sdeskinfo/display`
+- Admin: `https://gustavsund-sys.github.io/sdeskinfo/admin`
 
-`firebase.json` publicerar `dist` och skriver om alla vägar till `index.html`, så `/display`, `/admin` och `/admin/settings` fungerar även som direktlänkar.
+Bygget använder `/sdeskinfo/` som bas på GitHub Actions och skapar en `404.html`-fallback, så direkta länkar till `/display`, `/admin` och `/admin/settings` fungerar. Lägg till `gustavsund-sys.github.io` under **Firebase Authentication → Settings → Authorized domains** för att tillåta inloggning från GitHub Pages.
 
 ## Spark-plan och drift
 
-Lösningen kräver inga Cloud Functions, Cloud Run eller externa betaltjänster. Displayen har en Firestore-lyssnare för inställningar och en för meddelanden. Heartbeat skrivs en gång per minut. Bildfiler levereras av Hosting och Firestore-cachen gör att senast kända data kan visas vid nätavbrott. Detta håller läsningar och skrivningar låga och är utformat för Firebase Spark-planen.
+Lösningen kräver inga Cloud Functions, Cloud Run eller externa betaltjänster. Displayen har en Firestore-lyssnare för inställningar och en för meddelanden. Heartbeat skrivs en gång per minut. Bildfiler levereras av GitHub Pages och Firestore-cachen gör att senast kända data kan visas vid nätavbrott. Detta håller läsningar och skrivningar låga och är utformat för Firebase Spark-planen.
 
 ## Visuell riktning
 

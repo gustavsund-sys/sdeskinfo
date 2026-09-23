@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 export function SlidePlayer({slides,duration,transition}:{slides:string[];duration:number;transition:number}){
- const list=slides; const [index,setIndex]=useState(0); const [failed,setFailed]=useState<Set<number>>(new Set());
+ const base=import.meta.env.BASE_URL.replace(/\/$/,'');
+ const list=slides.map(src=>src.startsWith('/')?`${base}${src}`:src); const [index,setIndex]=useState(0); const [failed,setFailed]=useState<Set<number>>(new Set());
  useEffect(()=>{if(!list.length)return;const id=setInterval(()=>setIndex(i=>(i+1)%list.length),Math.max(2,duration)*1000);return()=>clearInterval(id)},[list.length,duration]);
  useEffect(()=>{if(!list.length)return;const img=new Image();img.src=list[(index+1)%list.length]},[index,list]);
  useEffect(()=>{if(failed.has(index)&&failed.size<list.length)setIndex(i=>(i+1)%list.length)},[failed,index,list.length]);
