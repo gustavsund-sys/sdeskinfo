@@ -1,0 +1,2 @@
+import type{OpeningHours}from'../types';import{getOpeningStatus}from'../lib/openingHours';
+export function OpeningHoursPanel({hours,now,width}:{hours:OpeningHours;now:Date;width?:string}){const state=getOpeningStatus(hours,now);return <aside className={`opening-hours-panel ${state.isOpen?'is-open':'is-closed'}`} style={width?{width}:undefined} aria-live="polite"><div className="opening-hours-label"><span className="opening-dot"/>Service desk</div><strong>{state.status}</strong><span>{state.detail}</span></aside>}
