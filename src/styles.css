@@ -45,7 +45,7 @@ a {
   overflow: hidden;
 }
 .display-header {
-  flex: 0 0 8%;
+  flex: 0 0 23%;
   min-height: 0;
   padding: 1% 1.5%;
   display: flex;
