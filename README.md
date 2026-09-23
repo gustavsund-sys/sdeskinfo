@@ -1,0 +1,107 @@
+# Service desk informationsskärm
+
+En robust informationsskärm för Service desk vid Örebro universitet. Den publika sidan på `/display` spelar en bildpresentation i loop och delar automatiskt ytan med tidsstyrd information. Det autentiserade gränssnittet på `/admin` hanterar meddelanden, förhandsvisning och skärminställningar.
+
+## Arkitektur
+
+- React, Vite och TypeScript som statisk SPA
+- Firebase Authentication med e-post/lösenord för administratörer
+- Cloud Firestore för inställningar, meddelanden och skärmens heartbeat
+- Firestore persistent lokal cache för fortsatt drift vid nätavbrott
+- Firebase Hosting med SPA-rewrite för direktlänkar
+- Samma `DisplayCanvas` används av både `/display` och adminförhandsvisningen
+
+Tider sparas som Firestore `Timestamp`. Webbläsarens `datetime-local` konverteras till en absolut tidpunkt och presentationen formaterar svensk tid med `Europe/Stockholm`, vilket gör schemaläggningen robust även vid sommar- och vintertid.
+
+## Lokal installation
+
+Krav: Node.js 20 eller senare.
+
+```bash
+npm install
+npm run dev
+```
+
+Öppna `http://localhost:5173/display` eller `http://localhost:5173/admin`.
+
+Kontrollera projektet med:
+
+```bash
+npm test
+npm run build
+```
+
+## Firebase-konfiguration
+
+Klientkonfigurationen för projektet `sdeskinfo-c7941` finns i `src/firebase.ts`. Detta är publik Firebase-klientmetadata, inte ett administratörslösenord.
+
+1. Öppna Firebase Console och välj projektet.
+2. Aktivera **Firestore Database**.
+3. Aktivera **Authentication → Sign-in method → Email/Password**.
+4. Skapa administratören manuellt under **Authentication → Users → Add user**. Appen erbjuder ingen registrering.
+5. Kopiera `.env.example` till `.env.local` och ange samma kontos e-postadress som `VITE_ADMIN_EMAIL`.
+6. Publicera reglerna med `firebase deploy --only firestore:rules`.
+
+Adminformuläret visar endast lösenordsfältet. Firebase kräver fortfarande en e-postadress som kontoidentifierare, men den läses från `VITE_ADMIN_EMAIL` och fylls i automatiskt bakom kulisserna. Adressen är klientkonfiguration och ska inte betraktas som en hemlighet; lösenordet lagras aldrig i projektet.
+
+### Firestore-data
+
+`settings/display` skapas när inställningar sparas. Saknas dokumentet används säkra standardvärden.
+
+```json
+{
+  "slideDuration": 10,
+  "transitionDuration": 800,
+  "messageRotationTime": 10,
+  "infoPanelWidth": 34,
+  "slides": []
+}
+```
+
+Meddelanden finns i `messages/{id}`. `displayStatus/main` uppdateras av displayen högst en gång per minut.
+
+## Säkerhet
+
+`firestore.rules` ger publiken läsbehörighet till displayinställningar och meddelanden. Endast det uttryckligen angivna Firebase-UID:t får ändra dessa. Heartbeat får endast skriva fälten `lastSeen` och `version`; läsning av status kräver det godkända administratörskontot. Alla andra dokument nekas som standard. Om administratörskontot byts måste UID:t i regelfunktionen `isAdmin()` uppdateras före nästa publicering.
+
+Publicera alltid reglerna tillsammans med appen. Firebase API-nyckeln ska inte användas som hemlighet. Administratörslösenord ska aldrig läggas i källkod, `.env`, Firestore eller `localStorage`.
+
+## Presentation och slides
+
+V1 visar slides som bilder. Lägg egna PNG-, JPG-, WebP- eller SVG-filer i `public/slides/`, bygg och distribuera, och ange sedan en publik URL per rad under **Admin → Inställningar**. Exempel: `/slides/min-slide.png`. Externa HTTPS-URL:er kan också användas om deras server tillåter det.
+
+Spelaren använder `object-fit: contain`, förladdar nästa bild och går vidare om en bild inte kan läsas. Om inga slides är konfigurerade visas en neutral, textfri bakgrund. Denna frikoppling gör att PDF/PPTX-import senare kan konvertera sidor till bild-URL:er utan att själva spelaren behöver göras om.
+
+## Användning
+
+- `/display`: öppnas i helskärm på informationsskärmen. Inga reglage visas.
+- `/admin`: logga in, se skärmstatus, aktiva och kommande meddelanden.
+- `/admin/new`: förhandsvisa, schemalägg eller publicera direkt i 30 minuter, 1 timme, resten av dagen eller till egen sluttid/tills vidare.
+- `/admin/settings`: ändra tider, panelbredd och slides med liveförhandsvisning.
+
+Flera aktiva meddelanden roterar. `important` får en tydligare markering och `urgent` använder 65 procent av skärmen. När sista meddelandet löper ut återgår presentationen mjukt till helskärm.
+
+## Demo och utveckling
+
+Tre lokala exempel finns i `src/lib/demo.ts` för komponentutveckling och tester. De används inte automatiskt i produktion; produktionsdata kommer alltid från Firestore. Presentationen innehåller inga exempelbudskap i produktionsläget.
+
+## Driftsättning till Firebase Hosting
+
+Installera Firebase CLI och logga in:
+
+```bash
+npm install -g firebase-tools
+firebase login
+npm run build
+firebase deploy
+```
+
+`firebase.json` publicerar `dist` och skriver om alla vägar till `index.html`, så `/display`, `/admin` och `/admin/settings` fungerar även som direktlänkar.
+
+## Spark-plan och drift
+
+Lösningen kräver inga Cloud Functions, Cloud Run eller externa betaltjänster. Displayen har en Firestore-lyssnare för inställningar och en för meddelanden. Heartbeat skrivs en gång per minut. Bildfiler levereras av Hosting och Firestore-cachen gör att senast kända data kan visas vid nätavbrott. Detta håller läsningar och skrivningar låga och är utformat för Firebase Spark-planen.
+
+## Visuell riktning
+
+Gränssnittet använder en återhållen svartvit universitetskaraktär, tydlig rubrikhierarki och stora luftiga ytor. ORU:s dokumenterade avhandlingsmall använder Trade Gothic Next och Sabon Next; eftersom de inte distribueras fritt använder appen systemnära Arial och Georgia i stället. Färger för status och prioritet är funktionella och kompletteras alltid med text, så färg är aldrig enda informationsbärare.

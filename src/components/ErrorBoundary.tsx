@@ -1,0 +1,2 @@
+import { Component, type ErrorInfo, type ReactNode } from 'react';
+export class ErrorBoundary extends Component<{children:ReactNode},{failed:boolean}>{state={failed:false};static getDerivedStateFromError(){return{failed:true}}componentDidCatch(error:Error,info:ErrorInfo){console.error('Display recovered from an error',error,info)}render(){return this.state.failed?<div className="fatal-fallback"><strong>Service desk</strong><span>Informationen uppdateras snart.</span></div>:this.props.children}}
