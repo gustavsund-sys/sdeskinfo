@@ -44,7 +44,7 @@ export function DisplayCanvas({
   }, [active.length, messageIndex]);
   const message = active[messageIndex];
   const urgent = message?.priority === "urgent";
-  const width = 15;
+  const width = 25;
   return (
     <main
       className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""}`}
