@@ -863,18 +863,6 @@ function SettingsPage() {
                 }
               />
             </label>
-            <label>
-              Informationspanel (%)
-              <input
-                type="number"
-                min="25"
-                max="50"
-                value={form.infoPanelWidth}
-                onChange={(e) =>
-                  setForm({ ...form, infoPanelWidth: +e.target.value })
-                }
-              />
-            </label>
           </div>
           <details>
             <summary>Avancerat: bild-URL:er</summary>

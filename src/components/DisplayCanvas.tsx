@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Info } from "lucide-react";
 import type { DisplaySettings, ServiceMessage } from "../types";
 import { activeAt } from "../lib/time";
 import { SlidePlayer } from "./SlidePlayer";
@@ -49,7 +50,7 @@ export function DisplayCanvas({
   }, [active.length, messageIndex]);
   const message = active[messageIndex];
   const urgent = message?.priority === "urgent";
-  const width = settings.infoPanelWidth;
+  const width = 15;
   return (
     <main
       className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""}`}
@@ -84,14 +85,11 @@ export function DisplayCanvas({
             </footer>
           </section>
         ) : (
-          <section className="info-panel info-panel-empty" aria-live="polite">
-            <div className="info-eyebrow">
-              <span>Info från Service desk</span>
-            </div>
-            <div className="info-copy">
-              <h1>Ingen aktuell information</h1>
-              <p>Nya meddelanden visas här.</p>
-            </div>
+          <section
+            className="info-panel info-panel-empty"
+            aria-label="Ingen aktuell information"
+          >
+            <Info className="empty-info-icon" aria-hidden="true" />
           </section>
         )}
         <OpeningHoursPanel hours={settings.openingHours} now={now} />

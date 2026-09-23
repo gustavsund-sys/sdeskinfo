@@ -8,4 +8,4 @@ export interface ServiceMessage { id:string; title:string; body:string; type:Mes
 const closedDay=():DayOpeningHours=>({enabled:false,open:'08:00',close:'16:00',lunchStart:'',lunchEnd:''});
 export const DEFAULT_OPENING_HOURS:OpeningHours={monday:closedDay(),tuesday:closedDay(),wednesday:closedDay(),thursday:closedDay(),friday:closedDay(),saturday:closedDay(),sunday:closedDay()};
 export interface DisplaySettings { slideDuration:number; transitionDuration:number; messageRotationTime:number; infoPanelWidth:number; slides:string[]; presentationId?:string; presentationName?:string; openingHours:OpeningHours }
-export const DEFAULT_SETTINGS: DisplaySettings = { slideDuration:10, transitionDuration:800, messageRotationTime:10, infoPanelWidth:34, slides:[], presentationId:'', presentationName:'', openingHours:DEFAULT_OPENING_HOURS };
+export const DEFAULT_SETTINGS: DisplaySettings = { slideDuration:10, transitionDuration:800, messageRotationTime:10, infoPanelWidth:15, slides:[], presentationId:'', presentationName:'', openingHours:DEFAULT_OPENING_HOURS };
