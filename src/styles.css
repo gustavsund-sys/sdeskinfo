@@ -45,9 +45,18 @@ a {
 }
 .presentation-pane {
   position: relative;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   height: 100%;
   transition: width 0.65s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.display-sidebar {
+  height: 100%;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-right: clamp(8px, 0.7vw, 14px) solid #2b2b2b;
 }
 .slide-player {
   position: relative;
@@ -73,23 +82,26 @@ a {
   opacity: 1;
 }
 .info-panel {
-  height: 100%;
-  flex: none;
+  min-height: 0;
+  flex: 1;
   padding: clamp(2.2rem, 4.4vw, 6.2rem) clamp(2rem, 4vw, 5.4rem);
   background: #fff;
   color: #111;
   display: flex;
   flex-direction: column;
-  border-right: clamp(8px, 0.7vw, 14px) solid #2b2b2b;
-  transition: width 0.65s cubic-bezier(0.22, 0.7, 0.2, 1);
+  transition: background-color 0.3s ease;
 }
 .info-panel.priority-important {
-  border-right-color: #b46c00;
   background: #fff9e8;
 }
 .info-panel.priority-urgent {
-  border-right-color: #8b1f1f;
   background: #fff5f3;
+}
+.info-panel-empty .info-copy h1 {
+  font-size: clamp(2.5rem, 3.6vw, 5rem);
+}
+.info-panel-empty .info-copy p {
+  color: #555;
 }
 .info-eyebrow {
   display: flex;
@@ -132,11 +144,8 @@ a {
   font-weight: 700;
 }
 .opening-hours-panel {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  z-index: 4;
-  width: clamp(320px, 28vw, 540px);
+  width: 100%;
+  flex: none;
   min-height: clamp(120px, 15vh, 180px);
   padding: clamp(1.3rem, 2.2vw, 2.6rem) clamp(1.5rem, 3vw, 3.8rem);
   display: grid;
@@ -145,12 +154,9 @@ a {
   color: #fff;
   background: #272727;
   border-top: 1px solid #ffffff40;
-  border-right: clamp(8px, 0.7vw, 14px) solid #9e2424;
-  box-shadow: 0 -12px 35px #0003;
 }
 .opening-hours-panel.is-open {
   background: #173c2a;
-  border-right-color: #3fc47b;
 }
 .opening-hours-label {
   display: flex;
@@ -180,9 +186,6 @@ a {
 }
 .opening-hours-panel > span:last-child {
   font-size: clamp(0.9rem, 1.15vw, 1.35rem);
-}
-.display-canvas.has-message .info-panel {
-  padding-bottom: clamp(10rem, 19vh, 15rem);
 }
 .fatal-fallback,
 .admin-loading {
@@ -515,6 +518,12 @@ a:focus-visible {
   gap: 2rem;
   align-items: start;
 }
+.settings-grid {
+  grid-template-columns: minmax(700px, 1.35fr) minmax(420px, 0.85fr);
+}
+.settings-grid > * {
+  min-width: 0;
+}
 .editor-card {
   background: #fff;
   border: 1px solid var(--line);
@@ -548,7 +557,7 @@ a:focus-visible {
 .hours-heading,
 .hours-day-row {
   display: grid;
-  grid-template-columns: minmax(5.5rem, 1fr) 4rem repeat(4, minmax(5.2rem, 0.8fr));
+  grid-template-columns: minmax(5.2rem, 1.1fr) 3.5rem repeat(4, minmax(4.8rem, 1fr));
   gap: 0.5rem;
   align-items: center;
 }
@@ -657,10 +666,9 @@ a:focus-visible {
   padding-block: 0.35rem;
 }
 .is-preview .opening-hours-panel {
-  width: 34%;
+  width: 100%;
   min-height: 25%;
   padding: 2% 3%;
-  border-right-width: 4px;
 }
 .is-preview .opening-hours-label {
   gap: 0.3rem;
@@ -727,26 +735,15 @@ a:focus-visible {
   .card-actions {
     flex-wrap: wrap;
   }
-  .display-canvas.has-message {
-    flex-direction: column;
+}
+@media (max-width: 1450px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
   }
-  .display-canvas.has-message .presentation-pane,
-  .display-canvas.has-message .info-panel {
-    width: 100% !important;
-  }
-  .display-canvas.has-message .presentation-pane {
-    height: 55%;
-  }
-  .display-canvas.has-message .info-panel {
-    height: 45%;
-    border-right: 0;
-    border-top: 7px solid #222;
-  }
-  .display-canvas.is-urgent .presentation-pane {
-    height: 35%;
-  }
-  .display-canvas.is-urgent .info-panel {
-    height: 65%;
+  .settings-grid .preview-card {
+    position: relative;
+    top: auto;
+    width: min(100%, 960px);
   }
 }
 @media (max-width: 640px) {

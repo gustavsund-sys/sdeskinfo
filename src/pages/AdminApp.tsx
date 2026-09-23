@@ -811,6 +811,11 @@ function SettingsPage() {
               Max 25 MB. Presentationen publiceras automatiskt när uppladdningen
               är klar.
             </p>
+            <p>
+              Inbäddade typsnitt behålls automatiskt. Bädda in eventuella
+              specialtypsnitt i PowerPoint-filen för identisk visning på alla
+              skärmar.
+            </p>
             {uploadStatus && (
               <div className="upload-status" role="status">
                 <Upload /> {uploadStatus}
