@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Info } from "lucide-react";
 import type { DisplaySettings, ServiceMessage } from "../types";
 import { activeAt } from "../lib/time";
+import { displayFontStack } from "../lib/fonts";
 import { SlidePlayer } from "./SlidePlayer";
 import { PptxPlayer } from "./PptxPlayer";
 import { OpeningHoursPanel } from "./OpeningHoursPanel";
@@ -55,6 +56,7 @@ export function DisplayCanvas({
             <section
               className={`info-panel priority-${message.priority} type-${message.type}`}
               aria-live="polite"
+              style={{ fontFamily: displayFontStack(settings.infoFontFamily) }}
             >
               <div className="info-copy">
                 <h1>{message.title}</h1>
@@ -72,11 +74,16 @@ export function DisplayCanvas({
             <section
               className="info-panel info-panel-empty"
               aria-label="Ingen aktuell information"
+              style={{ fontFamily: displayFontStack(settings.infoFontFamily) }}
             >
               <Info className="empty-info-icon" aria-hidden="true" />
             </section>
           )}
-          <OpeningHoursPanel hours={settings.openingHours} now={now} />
+          <OpeningHoursPanel
+            hours={settings.openingHours}
+            now={now}
+            fontFamily={displayFontStack(settings.openingHoursFontFamily)}
+          />
         </aside>
         <section className="presentation-pane">
           <div className="presentation-stage">

@@ -58,6 +58,7 @@ import {
   type WeekdayKey,
 } from "../types";
 import { DisplayCanvas } from "../components/DisplayCanvas";
+import { DISPLAY_FONT_OPTIONS, displayFontStack } from "../lib/fonts";
 
 function Login() {
   const [password, setPassword] = useState("");
@@ -821,6 +822,55 @@ function SettingsPage() {
                 <Upload /> {uploadStatus}
               </div>
             )}
+          </section>
+          <section className="font-settings">
+            <div>
+              <h2>Typsnitt</h2>
+              <p>Välj typsnitt separat för information och öppettider.</p>
+            </div>
+            <div className="two-col">
+              <label>
+                Information
+                <select
+                  value={form.infoFontFamily}
+                  style={{ fontFamily: displayFontStack(form.infoFontFamily) }}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      infoFontFamily: e.target.value as DisplaySettings["infoFontFamily"],
+                    })
+                  }
+                >
+                  {DISPLAY_FONT_OPTIONS.map((font) => (
+                    <option key={font.value} value={font.value}>
+                      {font.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Öppettidsruta
+                <select
+                  value={form.openingHoursFontFamily}
+                  style={{
+                    fontFamily: displayFontStack(form.openingHoursFontFamily),
+                  }}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      openingHoursFontFamily: e.target
+                        .value as DisplaySettings["openingHoursFontFamily"],
+                    })
+                  }
+                >
+                  {DISPLAY_FONT_OPTIONS.map((font) => (
+                    <option key={font.value} value={font.value}>
+                      {font.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
           </section>
           <OpeningHoursEditor
             value={form.openingHours}

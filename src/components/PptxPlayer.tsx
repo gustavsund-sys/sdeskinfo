@@ -9,6 +9,8 @@ import {
 } from "firebase/firestore";
 import type { PptxViewer } from "@aiden0z/pptx-renderer/browser";
 import { db } from "../firebase";
+import tradeGothicRegularUrl from "../assets/fonts/TradeGothicLTStd-Regular.otf?url";
+import tradeGothicBoldUrl from "../assets/fonts/TradeGothicLTStd-Bold.otf?url";
 
 const officeFontFaces = [
   { family: "Aptos", source: 'local("Aptos")' },
@@ -20,6 +22,24 @@ const officeFontFaces = [
   { family: "Arial", source: 'local("Arial Bold")', descriptors: { weight: "700" } },
   { family: "Times New Roman", source: 'local("Times New Roman")' },
   { family: "Segoe UI", source: 'local("Segoe UI")' },
+  {
+    family: "Trade Gothic LT Std",
+    source: `url("${tradeGothicRegularUrl}")`,
+  },
+  {
+    family: "Trade Gothic LT Std",
+    source: `url("${tradeGothicBoldUrl}")`,
+    descriptors: { weight: "700" },
+  },
+  {
+    family: "Trade Gothic Next HyvCd",
+    source: `url("${tradeGothicRegularUrl}")`,
+  },
+  {
+    family: "Trade Gothic Next HyvCd",
+    source: `url("${tradeGothicBoldUrl}")`,
+    descriptors: { weight: "700" },
+  },
 ] as const;
 
 export function PptxPlayer({

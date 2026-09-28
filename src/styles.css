@@ -1,3 +1,46 @@
+@font-face {
+  font-family: "Sabon LT Std";
+  src: url("./assets/fonts/SabonLTStd-Roman.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sabon LT Std";
+  src: url("./assets/fonts/SabonLTStd-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sabon LT Std";
+  src: url("./assets/fonts/SabonLTStd-Italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sabon LT Std";
+  src: url("./assets/fonts/SabonLTStd-BoldItalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Trade Gothic LT Std";
+  src: url("./assets/fonts/TradeGothicLTStd-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Trade Gothic LT Std";
+  src: url("./assets/fonts/TradeGothicLTStd-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   font-family: Arial, Helvetica, sans-serif;
   color: #171717;
@@ -930,7 +973,7 @@ summary {
 .kicker, .card-label { letter-spacing: .1em; font-size: .7rem; }
 .editor-card, .status-card, .message-card, .empty-state { border-radius: 16px; box-shadow: 0 4px 20px #192b3a05; }
 .editor-card { min-width: 0; padding: 1.5rem; gap: 1.4rem; }
-.section-title h2, .presentation-upload h2, .opening-hours-editor h2 { font-family: inherit; font-size: 1.2rem; letter-spacing: -.025em; }
+.section-title h2, .presentation-upload h2, .opening-hours-editor h2, .font-settings h2 { font-family: inherit; font-size: 1.2rem; letter-spacing: -.025em; }
 .button, .icon-button, .quick-publish button { border-radius: 9px; transition: background .2s, box-shadow .2s; }
 .button.primary { background: #176a60; border-color: #176a60; box-shadow: 0 3px 8px #176a601c; }
 .button.primary:hover { background: #10584f; }
@@ -942,6 +985,10 @@ input:disabled { background: #f0f3f5; color: #88949d; }
 input[type=checkbox] { accent-color: #176a60; }
 .presentation-upload { border: 1px dashed #abc9c3; border-radius: 12px; background: #f3f9f7; padding: 1.1rem; }
 .presentation-upload p { line-height: 1.5; overflow-wrap: anywhere; }
+.font-settings { display: grid; gap: 1rem; padding-block: .2rem; }
+.font-settings h2, .font-settings p { margin: 0; }
+.font-settings p { margin-top: .35rem; color: var(--muted); line-height: 1.45; }
+.font-settings select { width: 100%; background: #fff; }
 .hours-day-row { border-radius: 8px; background: #f4f6f8; }
 .hours-day-row.enabled { background: #eff8f3; }
 .preview-frame { border-radius: 12px; box-shadow: 0 12px 32px #192b3a18; border: 1px solid #dbe3e9; }
