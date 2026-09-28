@@ -92,6 +92,7 @@ Tre lokala exempel finns i `src/lib/demo.ts` för komponentutveckling och tester
 Workflow-filen `.github/workflows/deploy-pages.yml` testar, bygger och publicerar appen automatiskt när `main` uppdateras. GitHub Pages ska använda **GitHub Actions** som källa under repositoryts **Settings → Pages**.
 
 - Display: `https://gustavsund-sys.github.io/sdeskinfo/display`
+- Samsung QMC/Tizen-display: `https://gustavsund-sys.github.io/sdeskinfo/display/tizen`
 - Admin: `https://gustavsund-sys.github.io/sdeskinfo/admin`
 
 Bygget använder `/sdeskinfo/` som bas på GitHub Actions och skapar en `404.html`-fallback, så direkta länkar till `/display`, `/admin` och `/admin/settings` fungerar. Lägg till `gustavsund-sys.github.io` under **Firebase Authentication → Settings → Authorized domains** för att tillåta inloggning från GitHub Pages.
