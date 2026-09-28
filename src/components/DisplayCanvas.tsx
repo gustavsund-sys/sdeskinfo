@@ -10,10 +10,12 @@ export function DisplayCanvas({
   settings,
   messages,
   preview = false,
+  tizen = false,
 }: {
   settings: DisplaySettings;
   messages: ServiceMessage[];
   preview?: boolean;
+  tizen?: boolean;
 }) {
   const [now, setNow] = useState(new Date());
   const [messageIndex, setMessageIndex] = useState(0);
@@ -48,7 +50,7 @@ export function DisplayCanvas({
   const width = 25;
   return (
     <main
-      className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""}`}
+      className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""} ${tizen ? "is-tizen" : ""}`}
     >
       <div className="display-content">
         <aside className="display-sidebar" style={{ width: `${width}%` }}>
