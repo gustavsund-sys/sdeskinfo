@@ -1,0 +1,68 @@
+name: Process and publish presentation video
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: presentation-video
+  cancel-in-progress: false
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Process next video
+        id: process
+        run: node scripts/process-video-job.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - name: Publish converted video
+        if: steps.process.outputs.job_id != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/media/infoskarmen-production.mp4 src/generatedVideoVersion.ts
+          git commit -m "Publish converted presentation video"
+          git push
+      - name: Test and build site
+        if: steps.process.outputs.job_id != ''
+        run: pnpm test && pnpm run build
+        env:
+          VITE_ADMIN_EMAIL: gustavsund@gmail.com
+      - uses: actions/configure-pages@v5
+        if: steps.process.outputs.job_id != ''
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.process.outputs.job_id != ''
+        with:
+          path: dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: steps.process.outputs.job_id != ''
+        uses: actions/deploy-pages@v4
+      - name: Mark video as published
+        if: steps.process.outputs.job_id != '' && success()
+        run: node scripts/complete-video-job.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          VIDEO_JOB_ID: ${{ steps.process.outputs.job_id }}

@@ -7,6 +7,7 @@ import { SlidePlayer } from "./SlidePlayer";
 import { PptxPlayer } from "./PptxPlayer";
 import { OpeningHoursPanel } from "./OpeningHoursPanel";
 import { VideoPlayer } from "./VideoPlayer";
+import { VIDEO_VERSION } from "../generatedVideoVersion";
 export function DisplayCanvas({
   settings,
   messages,
@@ -54,8 +55,8 @@ export function DisplayCanvas({
   const hostedVideoUrl = `${import.meta.env.BASE_URL}media/${
     use1080Fallback
       ? "infoskarmen-2026-09-1080p.mp4"
-      : "infoskarmen-2026-09-4k-test.mov"
-  }`;
+      : "infoskarmen-production.mp4"
+  }?v=${encodeURIComponent(VIDEO_VERSION)}`;
   return (
     <main
       className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""} ${tizen ? "is-tizen" : ""}`}

@@ -707,7 +707,25 @@ function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [uploadJobId, setUploadJobId] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
   useEffect(() => setForm(settings), [settings]);
+  useEffect(() => {
+    if (!uploadJobId) return;
+    return onSnapshot(doc(db, "videoJobs", uploadJobId), (snapshot) => {
+      const job = snapshot.data();
+      if (!job) return;
+      if (job.status === "pending")
+        setUploadStatus("Filmen väntar på säker omkodning.");
+      if (job.status === "processing")
+        setUploadStatus("Filmen kodas om till Samsung-anpassad 4K…");
+      if (job.status === "ready")
+        setUploadStatus("Filmen är omkodad och publiceras nu på skärmen.");
+      if (job.status === "failed")
+        setUploadStatus(`Omkodningen misslyckades: ${job.error ?? "okänt fel"}`);
+      if (typeof job.progress === "number") setUploadProgress(job.progress);
+    });
+  }, [uploadJobId]);
   async function submit(e: FormEvent) {
     e.preventDefault();
     await setDoc(doc(db, "settings", "display"), form);
@@ -729,6 +747,7 @@ function SettingsPage() {
       return;
     }
     setUploading(true);
+    setUploadProgress(2);
     setUploadStatus("Läser presentationen…");
     const previousId = form.presentationId;
     const presentationId = `deck-${Date.now()}`;
@@ -765,6 +784,21 @@ function SettingsPage() {
           `Laddar upp presentationen… ${Math.round((Math.min(start + 10, chunkCount) / chunkCount) * 100)} %`,
         );
         await batch.commit();
+        setUploadProgress(
+          5 + Math.round((Math.min(start + 10, chunkCount) / chunkCount) * 30),
+        );
+      }
+      if (isVideo) {
+        const jobId = `video-${Date.now()}`;
+        await setDoc(doc(db, "videoJobs", jobId), {
+          presentationId,
+          originalName: file.name,
+          status: "pending",
+          progress: 35,
+          createdAt: serverTimestamp(),
+          requestedBy: auth.currentUser?.uid ?? "unknown",
+        });
+        setUploadJobId(jobId);
       }
       const next: DisplaySettings = {
         ...form,
@@ -775,12 +809,18 @@ function SettingsPage() {
       };
       await setDoc(doc(db, "settings", "display"), next);
       setForm(next);
-      setUploadStatus(`${file.name} är publicerad.`);
+      setUploadStatus(
+        isVideo
+          ? `${file.name} är uppladdad. Den kodas om och publiceras automatiskt inom några minuter.`
+          : `${file.name} är publicerad.`,
+      );
+      if (!isVideo) setUploadProgress(100);
       if (previousId && previousId !== presentationId)
         removePresentation(previousId).catch(() => undefined);
     } catch (error) {
       console.error("PPTX-uppladdningen misslyckades", error);
       setUploadStatus("Uppladdningen misslyckades. Försök igen.");
+      setUploadProgress(0);
     } finally {
       setUploading(false);
     }
@@ -797,14 +837,53 @@ function SettingsPage() {
         <form className="editor-card" onSubmit={submit}>
           <section className="presentation-upload">
             <h2>Presentationsfilm</h2>
-            <p>Aktuell: Infoskärmen 2026-09 – omkodad 4K.mov</p>
+            <p>Aktuell: Samsung-anpassad 4K-film</p>
             <p>
               Filmen levereras direkt från GitHub Pages för bästa kompatibilitet
               med Samsung QMC och spelas ljudlöst i loop.
             </p>
             <p>
-              För att byta film publiceras en ny MP4-fil tillsammans med appen.
+              Ladda upp PowerPoints exporterade MP4. Filmen köas för säker
+              omkodning och publiceras automatiskt när den är klar.
             </p>
+            <label className="button secondary upload-button">
+              <Upload aria-hidden="true" />
+              {uploading ? "Laddar upp…" : "Välj MP4-film"}
+              <input
+                type="file"
+                accept="video/mp4,.mp4"
+                disabled={uploading}
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void uploadPresentation(file);
+                  event.target.value = "";
+                }}
+              />
+            </label>
+            {uploadStatus && (
+              <div className="upload-progress" role="status">
+                <div className="upload-status">
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                    <Clock3 aria-hidden="true" />
+                  )}
+                  <span>{uploadStatus}</span>
+                  {uploadProgress > 0 && <strong>{uploadProgress} %</strong>}
+                </div>
+                {uploadProgress > 0 && (
+                  <progress
+                    aria-label="Publiceringsförlopp"
+                    max="100"
+                    value={uploadProgress}
+                  />
+                )}
+                <div className="upload-steps" aria-hidden="true">
+                  <span className={uploadProgress >= 5 ? "is-done" : ""}>Uppladdning</span>
+                  <span className={uploadProgress >= 35 ? "is-done" : ""}>Kö</span>
+                  <span className={uploadProgress >= 40 ? "is-done" : ""}>Omkodning</span>
+                  <span className={uploadProgress >= 95 ? "is-done" : ""}>Publicering</span>
+                </div>
+              </div>
+            )}
           </section>
           <section className="font-settings">
             <div>

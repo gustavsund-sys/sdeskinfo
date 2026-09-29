@@ -71,7 +71,9 @@ Publicera alltid reglerna tillsammans med appen. Firebase API-nyckeln ska inte a
 
 ## Presentation och slides
 
-Den aktiva videofilmen ligger under `public/media` och publiceras direkt på GitHub Pages. Det ger Samsung QMC en vanlig HTTPS-videoresurs i stället för en lokal `blob:`-adress, vilket är mer kompatibelt med Tizens videodekoder. I produktion används den omkodade H.264-baserade 4K-versionen. Filmen byts genom att ersätta mediafilen och publicera appen igen.
+Den aktiva videofilmen ligger som `public/media/infoskarmen-production.mp4` och publiceras direkt på GitHub Pages. Det ger Samsung QMC en vanlig HTTPS-videoresurs i stället för en lokal `blob:`-adress, vilket är mer kompatibelt med Tizens videodekoder. En MP4 som laddas upp i admin delas i Firestore-bitar och läggs som ett väntande jobb i `videoJobs`. GitHub Actions hämtar nästa jobb, kodar om det till en Samsung-anpassad 4K H.264/MP4 och publicerar resultatet automatiskt.
+
+Workflowen `process-video.yml` körs var femte minut och kan även startas manuellt. Den kodar om filmen, committar den färdiga filen och publicerar sedan webbplatsen direkt till GitHub Pages utan extra klick. När publiceringen är klar raderas originalets tillfälliga Firestore-bitar automatiskt för att hålla lagringen inom Spark-planens kvot. Lägg Firebase-serverkontots JSON som repository secret med namnet `FIREBASE_SERVICE_ACCOUNT`. Hemligheten används bara av GitHub Actions och exponeras aldrig i webbappen. Publicera även de medföljande Firestore-reglerna innan funktionen tas i bruk.
 
 Den fungerande 1080p-versionen finns kvar som reserv via `/display/tizen?video=1080p`.
 
