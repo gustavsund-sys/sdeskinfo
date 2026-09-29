@@ -1,0 +1,58 @@
+name: Reprocess bundled presentation video
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: presentation-video
+  cancel-in-progress: false
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Convert original to Samsung-compatible 4:3 UHD
+        run: |
+          ffmpeg -y -i public/media/infoskarmen-2026-09.mp4 \
+            -map 0:v:0 -an -c:v libx264 -profile:v high -level:v 5.1 \
+            -pix_fmt yuv420p \
+            -vf "scale=2880:2160:force_original_aspect_ratio=decrease,pad=2880:2160:(ow-iw)/2:(oh-ih)/2:black" \
+            -r 30 -preset medium -crf 18 -maxrate 35M -bufsize 70M \
+            -movflags +faststart public/media/infoskarmen-production.mp4
+          printf 'export const VIDEO_VERSION = "%s";\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > src/generatedVideoVersion.ts
+      - name: Publish corrected video
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/media/infoskarmen-production.mp4 src/generatedVideoVersion.ts
+          git commit -m "Publish corrected 4:3 presentation video"
+          git push
+      - run: pnpm test && pnpm run build
+        env:
+          VITE_ADMIN_EMAIL: gustavsund@gmail.com
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

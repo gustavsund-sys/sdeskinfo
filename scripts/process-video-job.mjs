@@ -97,7 +97,7 @@ try {
       "-profile:v", "high",
       "-level:v", "5.1",
       "-pix_fmt", "yuv420p",
-      "-vf", "scale=3840:2160:force_original_aspect_ratio=decrease,pad=3840:2160:(ow-iw)/2:(oh-ih)/2:black",
+      "-vf", "scale=2880:2160:force_original_aspect_ratio=decrease,pad=2880:2160:(ow-iw)/2:(oh-ih)/2:black",
       "-r", "30",
       "-preset", "medium",
       "-crf", "18",
