@@ -274,6 +274,7 @@ a {
   width: 0.8em;
   height: 0.8em;
   flex: none;
+  transform: translateY(-0.1em);
   border-radius: 50%;
   background: #e25151;
   box-shadow: 0 0 0 0.24em #e2515133;
