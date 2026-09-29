@@ -31,9 +31,33 @@ const jobCandidates = await db
   .where("status", "in", ["pending", "failed", "processing"])
   .limit(10)
   .get();
-const jobDocument = jobCandidates.docs.find(
-  (candidate) => (candidate.data().attempts ?? 0) < 3,
-);
+let jobDocument;
+let job;
+let chunks;
+for (const candidate of jobCandidates.docs) {
+  const candidateJob = candidate.data();
+  if ((candidateJob.attempts ?? 0) >= 3 || !candidateJob.presentationId) continue;
+  const candidateChunks = await db
+    .collection("presentations")
+    .doc(candidateJob.presentationId)
+    .collection("chunks")
+    .orderBy("index")
+    .get();
+  if (candidateChunks.empty) {
+    await candidate.ref.update({
+      status: "failed",
+      progress: 100,
+      completedAt: Timestamp.now(),
+      error: "Den uppladdade videon saknar databitar",
+    });
+    console.log(`Hoppar över ett gammalt videjobb utan databitar (${candidate.id}).`);
+    continue;
+  }
+  jobDocument = candidate;
+  job = candidateJob;
+  chunks = candidateChunks;
+  break;
+}
 
 if (!jobDocument) {
   console.log("Inget väntande videojobb.");
@@ -41,7 +65,6 @@ if (!jobDocument) {
 }
 
 const jobRef = jobDocument.ref;
-const job = jobDocument.data();
 const presentationId = job.presentationId;
 if (!presentationId) throw new Error("Videojobbet saknar presentationId");
 
@@ -58,14 +81,6 @@ const outputPath = join(workDir, "output.mp4");
 
 try {
   await mkdir(workDir, { recursive: true });
-  const chunks = await db
-    .collection("presentations")
-    .doc(presentationId)
-    .collection("chunks")
-    .orderBy("index")
-    .get();
-  if (chunks.empty) throw new Error("Den uppladdade videon saknar databitar");
-
   const input = Buffer.concat(
     chunks.docs.map((chunk) => {
       const data = chunk.data().data;
