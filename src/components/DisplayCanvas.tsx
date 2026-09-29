@@ -56,7 +56,7 @@ export function DisplayCanvas({
     use1080Fallback
       ? "infoskarmen-2026-09-1080p.mp4"
       : "infoskarmen-production.mp4"
-  }?v=${encodeURIComponent(VIDEO_VERSION)}`;
+  }?v=${encodeURIComponent(settings.videoVersion || VIDEO_VERSION)}`;
   return (
     <main
       className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""} ${tizen ? "is-tizen" : ""}`}

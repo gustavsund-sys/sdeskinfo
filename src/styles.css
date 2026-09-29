@@ -945,14 +945,25 @@ a:focus-visible {
   height: 100%;
 }
 .video-player {
+  position: relative;
   overflow: hidden;
   background: #111;
 }
 .video-player video {
+  position: absolute;
+  inset: 0;
   display: block;
   object-fit: contain;
   object-position: center bottom;
   background: #111;
+}
+.video-player-next {
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.video-player-next.is-ready {
+  opacity: 1;
 }
 .video-player-failed {
   background: #111;

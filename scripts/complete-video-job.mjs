@@ -10,12 +10,20 @@ const db = getFirestore();
 const jobRef = db.collection("videoJobs").doc(jobId);
 const jobSnapshot = await jobRef.get();
 const presentationId = jobSnapshot.data()?.presentationId;
+const publishedAt = new Date().toISOString();
 
-await jobRef.update({
+const batch = db.batch();
+batch.update(jobRef, {
   status: "ready",
   progress: 100,
   completedAt: Timestamp.now(),
 });
+batch.set(
+  db.collection("settings").doc("display"),
+  { videoVersion: publishedAt },
+  { merge: true },
+);
+await batch.commit();
 
 if (presentationId) {
   const presentationRef = db.collection("presentations").doc(presentationId);
