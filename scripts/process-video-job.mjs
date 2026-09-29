@@ -26,23 +26,31 @@ function capture(command, args) {
   });
 }
 
-const jobs = await db
+const jobCandidates = await db
   .collection("videoJobs")
-  .where("status", "==", "pending")
-  .limit(1)
+  .where("status", "in", ["pending", "failed"])
+  .limit(10)
   .get();
+const jobDocument = jobCandidates.docs.find(
+  (candidate) => (candidate.data().attempts ?? 0) < 3,
+);
 
-if (jobs.empty) {
+if (!jobDocument) {
   console.log("Inget väntande videojobb.");
   process.exit(0);
 }
 
-const jobRef = jobs.docs[0].ref;
-const job = jobs.docs[0].data();
+const jobRef = jobDocument.ref;
+const job = jobDocument.data();
 const presentationId = job.presentationId;
 if (!presentationId) throw new Error("Videojobbet saknar presentationId");
 
-await jobRef.update({ status: "processing", progress: 40, startedAt: Timestamp.now() });
+await jobRef.update({
+  status: "processing",
+  progress: 40,
+  attempts: (job.attempts ?? 0) + 1,
+  startedAt: Timestamp.now(),
+});
 
 const workDir = join(tmpdir(), `sdesk-video-${jobs.docs[0].id}`);
 const inputPath = join(workDir, "input.mp4");
@@ -59,7 +67,12 @@ try {
   if (chunks.empty) throw new Error("Den uppladdade videon saknar databitar");
 
   const input = Buffer.concat(
-    chunks.docs.map((chunk) => Buffer.from(chunk.data().data.toUint8Array())),
+    chunks.docs.map((chunk) => {
+      const data = chunk.data().data;
+      return Buffer.from(
+        typeof data?.toUint8Array === "function" ? data.toUint8Array() : data,
+      );
+    }),
   );
   await writeFile(inputPath, input);
 
@@ -127,7 +140,7 @@ try {
     outputSize: output.byteLength,
   });
   if (process.env.GITHUB_OUTPUT)
-    await writeFile(process.env.GITHUB_OUTPUT, `job_id=${jobs.docs[0].id}\n`, { flag: "a" });
+    await writeFile(process.env.GITHUB_OUTPUT, `job_id=${jobDocument.id}\n`, { flag: "a" });
   console.log(`Videon är färdigkodad (${output.byteLength} byte).`);
 } catch (error) {
   await jobRef.update({
