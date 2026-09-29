@@ -18,26 +18,18 @@ export function VideoPlayer({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [source, setSource] = useState("");
-  const [nextSource, setNextSource] = useState("");
-  const [nextReady, setNextReady] = useState(false);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     let objectUrl = "";
+    setSource("");
     setFailed(false);
 
     async function load() {
       try {
         if (sourceUrl) {
-          setSource((current) => {
-            if (!current) return sourceUrl;
-            if (current !== sourceUrl) {
-              setNextReady(false);
-              setNextSource(sourceUrl);
-            }
-            return current;
-          });
+          setSource(sourceUrl);
           return;
         }
         if (!presentationId) throw new Error("Videon saknas");
@@ -77,16 +69,6 @@ export function VideoPlayer({
     };
   }, [presentationId, sourceUrl]);
 
-  useEffect(() => {
-    if (!nextReady || !nextSource) return;
-    const id = window.setTimeout(() => {
-      setSource(nextSource);
-      setNextSource("");
-      setNextReady(false);
-    }, 450);
-    return () => window.clearTimeout(id);
-  }, [nextReady, nextSource]);
-
   return (
     <div className={`video-player ${failed ? "video-player-failed" : ""}`}>
       {source && (
@@ -101,27 +83,6 @@ export function VideoPlayer({
           aria-label="Videopresentation"
           onCanPlay={() => videoRef.current?.play().catch(() => undefined)}
           onError={() => setFailed(true)}
-        />
-      )}
-      {nextSource && (
-        <video
-          key={nextSource}
-          className={`video-player-next ${nextReady ? "is-ready" : ""}`}
-          src={nextSource}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-          onCanPlay={(event) => {
-            event.currentTarget.play().catch(() => undefined);
-            setNextReady(true);
-          }}
-          onError={() => {
-            setNextSource("");
-            setNextReady(false);
-          }}
         />
       )}
     </div>
