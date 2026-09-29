@@ -264,6 +264,7 @@ a {
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  margin-bottom: clamp(0.45rem, 0.65vw, 0.8rem);
   font-size: clamp(0.75rem, 0.9vw, 1.05rem);
   font-weight: 700;
   letter-spacing: 0.09em;
@@ -1053,13 +1054,14 @@ input[type=checkbox] { accent-color: #176a60; }
 .opening-dot { position: relative; box-shadow: none; }
 .is-open .opening-dot { box-shadow: none; }
 .opening-dot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: inherit; animation: status-pulse 2.8s ease-out infinite; }
-@keyframes status-pulse { 0%, 100% { transform: scale(1); opacity: 0; } 15% { opacity: .4; } 70% { transform: scale(2.4); opacity: 0; } }
+@keyframes status-pulse { 0%, 100% { transform: scale(1); opacity: 0; } 15% { opacity: .4; } 70% { transform: scale(2); opacity: 0; } }
 .is-preview .display-sidebar .info-panel { padding: 10%; }
 .is-preview .display-sidebar .info-eyebrow { font-size: clamp(.25rem, .5vw, .55rem); padding-bottom: .4rem; }
 .is-preview .display-sidebar .info-copy h1 { font-size: clamp(.6rem, 1.2vw, 1.4rem); }
 .is-preview .display-sidebar .info-copy p { font-size: clamp(.35rem, .7vw, .8rem); }
 .is-preview .empty-info-icon { width: 55%; height: auto; }
 .is-preview .display-sidebar .opening-hours-panel { padding: 10%; }
+.is-preview .opening-hours-label { margin-bottom: 3%; }
 .is-preview .display-sidebar .opening-hours-panel strong { font-size: clamp(.6rem, 1.1vw, 1.3rem); }
 .is-preview .display-sidebar .opening-hours-panel > span:last-child { font-size: clamp(.3rem, .5vw, .6rem); }
 @media (max-width: 1250px) { .settings-grid { grid-template-columns: minmax(0, 1fr); } }
