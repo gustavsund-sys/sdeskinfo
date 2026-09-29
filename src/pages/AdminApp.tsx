@@ -597,6 +597,7 @@ function MessageEditor() {
 const PPTX_MAX_SIZE = 25 * 1024 * 1024;
 const VIDEO_MAX_SIZE = 100 * 1024 * 1024;
 const PRESENTATION_CHUNK_SIZE = 700_000;
+const PRESENTATION_BATCH_SIZE = 3;
 async function removePresentation(id: string) {
   const chunks = await getDocs(collection(db, "presentations", id, "chunks"));
   const batch = writeBatch(db);
@@ -818,9 +819,9 @@ function SettingsPage() {
         contentType: file.type || (isVideo ? "video/mp4" : "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
         createdAt: serverTimestamp(),
       });
-      for (let start = 0; start < chunkCount; start += 10) {
+      for (let start = 0; start < chunkCount; start += PRESENTATION_BATCH_SIZE) {
         const batch = writeBatch(db);
-        for (let i = start; i < Math.min(start + 10, chunkCount); i++) {
+        for (let i = start; i < Math.min(start + PRESENTATION_BATCH_SIZE, chunkCount); i++) {
           const chunk = bytes.slice(
             i * PRESENTATION_CHUNK_SIZE,
             Math.min((i + 1) * PRESENTATION_CHUNK_SIZE, bytes.byteLength),
@@ -837,11 +838,11 @@ function SettingsPage() {
           );
         }
         setUploadStatus(
-          `Laddar upp presentationen… ${Math.round((Math.min(start + 10, chunkCount) / chunkCount) * 100)} %`,
+          `Laddar upp presentationen… ${Math.round((Math.min(start + PRESENTATION_BATCH_SIZE, chunkCount) / chunkCount) * 100)} %`,
         );
         await batch.commit();
         setUploadProgress(
-          5 + Math.round((Math.min(start + 10, chunkCount) / chunkCount) * 30),
+          5 + Math.round((Math.min(start + PRESENTATION_BATCH_SIZE, chunkCount) / chunkCount) * 30),
         );
       }
       if (isVideo) {
@@ -876,7 +877,11 @@ function SettingsPage() {
         removePresentation(previousId).catch(() => undefined);
     } catch (error) {
       console.error("PPTX-uppladdningen misslyckades", error);
-      setUploadStatus("Uppladdningen misslyckades. Försök igen.");
+      setUploadStatus(
+        error instanceof Error && error.message.includes("resource-exhausted")
+          ? "Uppladdningen blev överbelastad och avbröts. Försök ladda upp filmen igen."
+          : "Uppladdningen misslyckades. Försök igen.",
+      );
       setUploadProgress(0);
     } finally {
       setUploading(false);
