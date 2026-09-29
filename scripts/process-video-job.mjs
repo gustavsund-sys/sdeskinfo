@@ -28,7 +28,7 @@ function capture(command, args) {
 
 const jobCandidates = await db
   .collection("videoJobs")
-  .where("status", "in", ["pending", "failed"])
+  .where("status", "in", ["pending", "failed", "processing"])
   .limit(10)
   .get();
 const jobDocument = jobCandidates.docs.find(
@@ -52,7 +52,7 @@ await jobRef.update({
   startedAt: Timestamp.now(),
 });
 
-const workDir = join(tmpdir(), `sdesk-video-${jobs.docs[0].id}`);
+const workDir = join(tmpdir(), `sdesk-video-${jobDocument.id}`);
 const inputPath = join(workDir, "input.mp4");
 const outputPath = join(workDir, "output.mp4");
 
