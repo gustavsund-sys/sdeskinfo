@@ -31,6 +31,7 @@ jobs:
       - run: pnpm run build
         env:
           VITE_ADMIN_EMAIL: gustavsund@gmail.com
+          VITE_VIDEO_TRIGGER_URL: https://sdeskinfo-video-trigger.gustavsund.workers.dev
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

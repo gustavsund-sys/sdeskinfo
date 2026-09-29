@@ -702,6 +702,7 @@ function OpeningHoursEditor({
   );
 }
 const VIDEO_JOB_STORAGE_KEY = "sdeskinfo.activeVideoJobId";
+const VIDEO_TRIGGER_URL = import.meta.env.VITE_VIDEO_TRIGGER_URL?.trim();
 
 function SettingsPage() {
   const { settings, messages } = useDisplayData();
@@ -753,6 +754,22 @@ function SettingsPage() {
     await setDoc(doc(db, "settings", "display"), form);
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
+  }
+  async function triggerVideoWorkflow() {
+    if (!VIDEO_TRIGGER_URL) return;
+    try {
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) return;
+      const response = await fetch(VIDEO_TRIGGER_URL, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error(`Worker svarade ${response.status}`);
+      setUploadStatus("Omkodningen startar nu…");
+    } catch (error) {
+      console.warn("Kunde inte starta GitHub-jobbet direkt", error);
+      setUploadStatus("Filmen är köad för omkodning.");
+    }
   }
   async function uploadPresentation(file: File) {
     const isVideo = file.name.toLowerCase().endsWith(".mp4");
@@ -821,6 +838,7 @@ function SettingsPage() {
           requestedBy: auth.currentUser?.uid ?? "unknown",
         });
         setUploadJobId(jobId);
+        void triggerVideoWorkflow();
       }
       const next: DisplaySettings = {
         ...form,

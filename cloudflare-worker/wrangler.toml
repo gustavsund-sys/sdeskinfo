@@ -1,0 +1,11 @@
+name = "sdeskinfo-video-trigger"
+main = "src/index.js"
+compatibility_date = "2026-09-29"
+
+[vars]
+FIREBASE_API_KEY = "AIzaSyCRNJDCnUoh0UswBHFDN6f1HoDnptt4bxE"
+FIREBASE_ADMIN_UID = "QW3iPpCmUEVTvZFFoD4aD5idwhY2"
+GITHUB_OWNER = "gustavsund-sys"
+GITHUB_REPO = "sdeskinfo"
+GITHUB_WORKFLOW = "process-video.yml"
+ALLOWED_ORIGIN = "https://gustavsund-sys.github.io"
