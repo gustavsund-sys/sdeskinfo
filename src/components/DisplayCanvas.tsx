@@ -6,6 +6,7 @@ import { displayFontStack } from "../lib/fonts";
 import { SlidePlayer } from "./SlidePlayer";
 import { PptxPlayer } from "./PptxPlayer";
 import { OpeningHoursPanel } from "./OpeningHoursPanel";
+import { VideoPlayer } from "./VideoPlayer";
 export function DisplayCanvas({
   settings,
   messages,
@@ -89,7 +90,9 @@ export function DisplayCanvas({
         </aside>
         <section className="presentation-pane">
           <div className="presentation-stage">
-            {settings.presentationId ? (
+            {settings.presentationId && settings.presentationType === "video" ? (
+              <VideoPlayer presentationId={settings.presentationId} />
+            ) : settings.presentationId ? (
               <PptxPlayer
                 presentationId={settings.presentationId}
                 duration={settings.slideDuration}

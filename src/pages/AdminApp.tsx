@@ -593,7 +593,8 @@ function MessageEditor() {
 }
 
 const PPTX_MAX_SIZE = 25 * 1024 * 1024;
-const PPTX_CHUNK_SIZE = 700_000;
+const VIDEO_MAX_SIZE = 100 * 1024 * 1024;
+const PRESENTATION_CHUNK_SIZE = 700_000;
 async function removePresentation(id: string) {
   const chunks = await getDocs(collection(db, "presentations", id, "chunks"));
   const batch = writeBatch(db);
@@ -714,13 +715,16 @@ function SettingsPage() {
     setTimeout(() => setSaved(false), 2500);
   }
   async function uploadPresentation(file: File) {
-    if (!file.name.toLowerCase().endsWith(".pptx")) {
-      setUploadStatus("Välj en PowerPoint-fil i PPTX-format.");
+    const isVideo = file.name.toLowerCase().endsWith(".mp4");
+    const isPptx = file.name.toLowerCase().endsWith(".pptx");
+    if (!isVideo && !isPptx) {
+      setUploadStatus("Välj en MP4-film eller PowerPoint-fil i PPTX-format.");
       return;
     }
-    if (file.size > PPTX_MAX_SIZE) {
+    const maxSize = isVideo ? VIDEO_MAX_SIZE : PPTX_MAX_SIZE;
+    if (file.size > maxSize) {
       setUploadStatus(
-        "Filen är större än 25 MB. Komprimera bilderna i PowerPoint och försök igen.",
+        `Filen är större än ${isVideo ? 100 : 25} MB. Komprimera filen och försök igen.`,
       );
       return;
     }
@@ -730,19 +734,21 @@ function SettingsPage() {
     const presentationId = `deck-${Date.now()}`;
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
-      const chunkCount = Math.ceil(bytes.byteLength / PPTX_CHUNK_SIZE);
+      const chunkCount = Math.ceil(bytes.byteLength / PRESENTATION_CHUNK_SIZE);
       await setDoc(doc(db, "presentations", presentationId), {
         name: file.name,
         size: file.size,
         chunkCount,
+        type: isVideo ? "video" : "pptx",
+        contentType: file.type || (isVideo ? "video/mp4" : "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
         createdAt: serverTimestamp(),
       });
       for (let start = 0; start < chunkCount; start += 10) {
         const batch = writeBatch(db);
         for (let i = start; i < Math.min(start + 10, chunkCount); i++) {
           const chunk = bytes.slice(
-            i * PPTX_CHUNK_SIZE,
-            Math.min((i + 1) * PPTX_CHUNK_SIZE, bytes.byteLength),
+            i * PRESENTATION_CHUNK_SIZE,
+            Math.min((i + 1) * PRESENTATION_CHUNK_SIZE, bytes.byteLength),
           );
           batch.set(
             doc(
@@ -760,10 +766,11 @@ function SettingsPage() {
         );
         await batch.commit();
       }
-      const next = {
+      const next: DisplaySettings = {
         ...form,
         presentationId,
         presentationName: file.name,
+        presentationType: isVideo ? "video" : "pptx",
         slides: [],
       };
       await setDoc(doc(db, "settings", "display"), next);
@@ -789,17 +796,17 @@ function SettingsPage() {
       <div className="settings-grid">
         <form className="editor-card" onSubmit={submit}>
           <section className="presentation-upload">
-            <h2>PowerPoint-presentation</h2>
+            <h2>Presentationsfilm</h2>
             <p>
               {form.presentationName
                 ? `Aktuell: ${form.presentationName}`
                 : "Ingen presentation är uppladdad."}
             </p>
             <label>
-              Välj PowerPoint-fil
+              Välj MP4-film
               <input
                 type="file"
-                accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                accept=".mp4,video/mp4,.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
                 disabled={uploading}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
@@ -809,13 +816,12 @@ function SettingsPage() {
               />
             </label>
             <p>
-              Max 25 MB. Presentationen publiceras automatiskt när uppladdningen
-              är klar.
+              MP4 upp till 100 MB. Filmen publiceras automatiskt och spelas
+              ljudlöst i loop när uppladdningen är klar.
             </p>
             <p>
-              Inbäddade typsnitt behålls automatiskt. Bädda in eventuella
-              specialtypsnitt i PowerPoint-filen för identisk visning på alla
-              skärmar.
+              Exportera helst som H.264-video i MP4-format för bästa stöd på
+              Samsung QMC. PPTX kan fortfarande väljas som reservformat.
             </p>
             {uploadStatus && (
               <div className="upload-status" role="status">
