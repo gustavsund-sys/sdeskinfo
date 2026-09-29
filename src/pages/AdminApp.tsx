@@ -859,11 +859,6 @@ function SettingsPage() {
         <form className="editor-card" onSubmit={submit}>
           <section className="presentation-upload">
             <h2>Presentationsfilm</h2>
-            <p>Aktuell: Samsung-anpassad 4K-film</p>
-            <p>
-              Filmen levereras direkt från GitHub Pages för bästa kompatibilitet
-              med Samsung QMC och spelas ljudlöst i loop.
-            </p>
             <p>
               Ladda upp PowerPoints exporterade MP4. Filmen köas för säker
               omkodning och publiceras automatiskt när den är klar.
