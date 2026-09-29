@@ -760,11 +760,15 @@ function SettingsPage() {
         setUploadStatus("Filmen väntar på säker omkodning.");
       if (job.status === "processing")
         setUploadStatus("Filmen kodas om till Samsung-anpassad 4K…");
-      if (job.status === "ready")
-        setUploadStatus("Filmen är omkodad och publiceras nu på skärmen.");
+      if (job.status === "ready") {
+        const name = job.originalName || "Den nya filmen";
+        setUploadStatus(`Klart! ${name} är uppladdad, publicerad och visas nu på skärmen.`);
+        setUploadProgress(0);
+      }
       if (job.status === "failed")
         setUploadStatus(`Omkodningen misslyckades: ${job.error ?? "okänt fel"}`);
-      if (typeof job.progress === "number") setUploadProgress(job.progress);
+      if (job.status !== "ready" && typeof job.progress === "number")
+        setUploadProgress(job.progress);
     });
   }, [uploadJobId]);
   async function submit(e: FormEvent) {
