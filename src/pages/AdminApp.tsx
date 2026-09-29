@@ -14,10 +14,12 @@ import {
   getDoc,
   getDocs,
   onSnapshot,
+  query,
   serverTimestamp,
   setDoc,
   Timestamp,
   updateDoc,
+  where,
   writeBatch,
 } from "firebase/firestore";
 import {
@@ -719,6 +721,21 @@ function SettingsPage() {
   });
   const [uploadProgress, setUploadProgress] = useState(0);
   useEffect(() => setForm(settings), [settings]);
+  useEffect(() => {
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+    return onSnapshot(
+      query(collection(db, "videoJobs"), where("requestedBy", "==", uid)),
+      (snapshot) => {
+        const latest = [...snapshot.docs].sort((a, b) => {
+          const aTime = a.data().createdAt?.toMillis?.() ?? 0;
+          const bTime = b.data().createdAt?.toMillis?.() ?? 0;
+          return bTime - aTime;
+        })[0];
+        if (latest) setUploadJobId(latest.id);
+      },
+    );
+  }, []);
   useEffect(() => {
     try {
       if (uploadJobId)

@@ -29,12 +29,16 @@ function capture(command, args) {
 const jobCandidates = await db
   .collection("videoJobs")
   .where("status", "in", ["pending", "failed", "processing"])
-  .limit(10)
   .get();
 let jobDocument;
 let job;
 let chunks;
-for (const candidate of jobCandidates.docs) {
+const newestFirst = [...jobCandidates.docs].sort((a, b) => {
+  const aTime = a.data().createdAt?.toMillis?.() ?? 0;
+  const bTime = b.data().createdAt?.toMillis?.() ?? 0;
+  return bTime - aTime;
+});
+for (const candidate of newestFirst) {
   const candidateJob = candidate.data();
   if ((candidateJob.attempts ?? 0) >= 3 || !candidateJob.presentationId) continue;
   const candidateChunks = await db
