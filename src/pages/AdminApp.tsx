@@ -701,20 +701,42 @@ function OpeningHoursEditor({
     </section>
   );
 }
+const VIDEO_JOB_STORAGE_KEY = "sdeskinfo.activeVideoJobId";
+
 function SettingsPage() {
   const { settings, messages } = useDisplayData();
   const [form, setForm] = useState<DisplaySettings>(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
-  const [uploadJobId, setUploadJobId] = useState("");
+  const [uploadJobId, setUploadJobId] = useState(() => {
+    try {
+      return window.localStorage.getItem(VIDEO_JOB_STORAGE_KEY) ?? "";
+    } catch {
+      return "";
+    }
+  });
   const [uploadProgress, setUploadProgress] = useState(0);
   useEffect(() => setForm(settings), [settings]);
+  useEffect(() => {
+    try {
+      if (uploadJobId)
+        window.localStorage.setItem(VIDEO_JOB_STORAGE_KEY, uploadJobId);
+      else window.localStorage.removeItem(VIDEO_JOB_STORAGE_KEY);
+    } catch {
+      // Statusen fungerar fortfarande under den aktuella sessionen.
+    }
+  }, [uploadJobId]);
   useEffect(() => {
     if (!uploadJobId) return;
     return onSnapshot(doc(db, "videoJobs", uploadJobId), (snapshot) => {
       const job = snapshot.data();
-      if (!job) return;
+      if (!job) {
+        setUploadJobId("");
+        setUploadProgress(0);
+        setUploadStatus("");
+        return;
+      }
       if (job.status === "pending")
         setUploadStatus("Filmen väntar på säker omkodning.");
       if (job.status === "processing")
