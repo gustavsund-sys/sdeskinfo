@@ -71,7 +71,7 @@ Publicera alltid reglerna tillsammans med appen. Firebase API-nyckeln ska inte a
 
 ## Presentation och slides
 
-Under **Admin → Presentation** kan administratören välja en `.mp4`-film direkt. Appen delar filen i Firestore-säkra delar, laddar upp dem, byter aktiv presentation först när hela filen är färdig och tar därefter bort den tidigare versionen. MP4-filer får vara upp till 100 MB. PPTX stöds fortfarande som reservformat med maximal filstorlek 25 MB.
+Den aktiva `.mp4`-filmen ligger under `public/media` och publiceras direkt på GitHub Pages. Det ger Samsung QMC en vanlig HTTPS-videoresurs i stället för en lokal `blob:`-adress, vilket är mer kompatibelt med Tizens videodekoder. Filmen byts genom att ersätta mediafilen och publicera appen igen.
 
 Filmen spelas automatiskt, ljudlöst och i loop och skalas med `contain` så att inget beskärs. H.264 i MP4-format rekommenderas för Samsung QMC. Om ingen presentation är uppladdad visas en neutral, textfri bakgrund. Publika bild-URL:er finns kvar som ett avancerat reservläge.
 

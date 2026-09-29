@@ -797,37 +797,14 @@ function SettingsPage() {
         <form className="editor-card" onSubmit={submit}>
           <section className="presentation-upload">
             <h2>Presentationsfilm</h2>
+            <p>Aktuell: Infoskärmen 2026-09 4_3 (1).mp4</p>
             <p>
-              {form.presentationName
-                ? `Aktuell: ${form.presentationName}`
-                : "Ingen presentation är uppladdad."}
-            </p>
-            <label>
-              Välj MP4-film
-              <input
-                type="file"
-                accept=".mp4,video/mp4,.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                disabled={uploading}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) uploadPresentation(file);
-                  e.target.value = "";
-                }}
-              />
-            </label>
-            <p>
-              MP4 upp till 100 MB. Filmen publiceras automatiskt och spelas
-              ljudlöst i loop när uppladdningen är klar.
+              Filmen levereras direkt från GitHub Pages för bästa kompatibilitet
+              med Samsung QMC och spelas ljudlöst i loop.
             </p>
             <p>
-              Exportera helst som H.264-video i MP4-format för bästa stöd på
-              Samsung QMC. PPTX kan fortfarande väljas som reservformat.
+              För att byta film publiceras en ny MP4-fil tillsammans med appen.
             </p>
-            {uploadStatus && (
-              <div className="upload-status" role="status">
-                <Upload /> {uploadStatus}
-              </div>
-            )}
           </section>
           <section className="font-settings">
             <div>

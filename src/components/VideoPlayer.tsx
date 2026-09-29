@@ -9,7 +9,13 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 
-export function VideoPlayer({ presentationId }: { presentationId: string }) {
+export function VideoPlayer({
+  presentationId,
+  sourceUrl,
+}: {
+  presentationId?: string;
+  sourceUrl?: string;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [source, setSource] = useState("");
   const [failed, setFailed] = useState(false);
@@ -22,6 +28,11 @@ export function VideoPlayer({ presentationId }: { presentationId: string }) {
 
     async function load() {
       try {
+        if (sourceUrl) {
+          setSource(sourceUrl);
+          return;
+        }
+        if (!presentationId) throw new Error("Videon saknas");
         const snap = await getDocs(
           query(
             collection(db, "presentations", presentationId, "chunks"),
@@ -56,7 +67,7 @@ export function VideoPlayer({ presentationId }: { presentationId: string }) {
       cancelled = true;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [presentationId]);
+  }, [presentationId, sourceUrl]);
 
   return (
     <div className={`video-player ${failed ? "video-player-failed" : ""}`}>
