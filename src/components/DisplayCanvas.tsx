@@ -49,7 +49,7 @@ export function DisplayCanvas({
   const message = active[messageIndex];
   const urgent = message?.priority === "urgent";
   const width = 25;
-  const hostedVideoUrl = `${import.meta.env.BASE_URL}media/infoskarmen-2026-09.mp4`;
+  const hostedVideoUrl = `${import.meta.env.BASE_URL}media/infoskarmen-2026-09-1080p.mp4`;
   return (
     <main
       className={`display-canvas ${message ? "has-message" : ""} ${urgent ? "is-urgent" : ""} ${preview ? "is-preview" : ""} ${tizen ? "is-tizen" : ""}`}
