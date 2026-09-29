@@ -797,7 +797,7 @@ function SettingsPage() {
         <form className="editor-card" onSubmit={submit}>
           <section className="presentation-upload">
             <h2>Presentationsfilm</h2>
-            <p>Aktuell: Infoskärmen 2026-09 – 1080p.mp4</p>
+            <p>Aktuell: Infoskärmen 2026-09 – omkodad 4K.mov</p>
             <p>
               Filmen levereras direkt från GitHub Pages för bästa kompatibilitet
               med Samsung QMC och spelas ljudlöst i loop.
