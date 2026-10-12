@@ -1008,7 +1008,7 @@ function SettingsPage() {
           />
           <div className="two-col">
             <label>
-              Rotationstid (sekunder)
+              Rotationstid för informationsmeddelanden (sekunder)
               <input
                 type="number"
                 min="3"
