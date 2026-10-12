@@ -654,12 +654,17 @@ function OpeningHoursEditor({
               <button
                 type="button"
                 className={`hours-status-button ${item.enabled ? "is-open" : "is-closed"}`}
-                aria-pressed={item.enabled}
+                role="switch"
+                aria-checked={item.enabled}
                 aria-label={`${weekdayLabels[day]}: ${item.enabled ? "Öppet, klicka för att stänga" : "Stängt, klicka för att öppna"}`}
                 onClick={() => update(day, { enabled: !item.enabled })}
               >
-                <span className="hours-status-dot" aria-hidden="true" />
-                <span>{item.enabled ? "JA · Öppet" : "NEJ · Stängt"}</span>
+                <span className="hours-switch-track" aria-hidden="true">
+                  <span className="hours-switch-thumb" />
+                </span>
+                <span className="hours-switch-label">
+                  {item.enabled ? "Öppet" : "Stängt"}
+                </span>
               </button>
               <label>
                 <span>Från</span>
