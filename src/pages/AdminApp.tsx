@@ -391,7 +391,10 @@ function MessageEditor() {
     });
     setTemplateStatus("Informationsmallen är sparad.");
   }
-  async function save(mode: "schedule" | "now", quick?: string) {
+  async function save(
+    mode: "schedule" | "now",
+    quick?: "30" | "60" | "day" | "forever" | "custom",
+  ) {
     if (!draft.title.trim() || !draft.body.trim()) return;
     setSaving(true);
     let start = new Date(draft.start);
@@ -404,6 +407,7 @@ function MessageEditor() {
         end = new Date();
         end.setHours(23, 59, 59, 999);
       }
+      if (quick === "forever") end = null;
     }
     const payload = {
       title: draft.title.trim(),
@@ -571,9 +575,14 @@ function MessageEditor() {
             <button type="button" onClick={() => save("now", "day")}>
               Resten av dagen
             </button>
-            <button type="button" onClick={() => save("now")}>
-              {draft.end ? "Egen sluttid" : "Tills vidare"}
+            <button type="button" onClick={() => save("now", "forever")}>
+              Tills vidare
             </button>
+            {draft.end && (
+              <button type="button" onClick={() => save("now", "custom")}>
+                Egen sluttid
+              </button>
+            )}
           </fieldset>
         </form>
         <aside className={`preview-card ${preview ? "preview-open" : ""}`}>
