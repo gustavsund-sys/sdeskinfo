@@ -637,7 +637,7 @@ function OpeningHoursEditor({
       <div className="hours-table">
         <div className="hours-heading" aria-hidden="true">
           <span>Dag</span>
-          <span>Öppet</span>
+          <span>Status</span>
           <span>Från</span>
           <span>Till</span>
           <span>Lunch från</span>
@@ -651,14 +651,16 @@ function OpeningHoursEditor({
               key={day}
             >
               <strong>{weekdayLabels[day]}</strong>
-              <label className="hours-enabled">
-                <input
-                  type="checkbox"
-                  checked={item.enabled}
-                  onChange={(e) => update(day, { enabled: e.target.checked })}
-                />
-                <span>{item.enabled ? "Ja" : "Nej"}</span>
-              </label>
+              <button
+                type="button"
+                className={`hours-status-button ${item.enabled ? "is-open" : "is-closed"}`}
+                aria-pressed={item.enabled}
+                aria-label={`${weekdayLabels[day]}: ${item.enabled ? "Öppet, klicka för att stänga" : "Stängt, klicka för att öppna"}`}
+                onClick={() => update(day, { enabled: !item.enabled })}
+              >
+                <span className="hours-status-dot" aria-hidden="true" />
+                <span>{item.enabled ? "JA · Öppet" : "NEJ · Stängt"}</span>
+              </button>
               <label>
                 <span>Från</span>
                 <input

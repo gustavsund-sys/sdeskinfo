@@ -670,7 +670,7 @@ a:focus-visible {
 .hours-heading,
 .hours-day-row {
   display: grid;
-  grid-template-columns: minmax(5.2rem, 1.1fr) 3.5rem repeat(4, minmax(4.8rem, 1fr));
+  grid-template-columns: minmax(5.2rem, 1.1fr) 7.25rem repeat(4, minmax(4.8rem, 1fr));
   gap: 0.5rem;
   align-items: center;
 }
@@ -700,18 +700,47 @@ a:focus-visible {
   min-width: 0;
   padding: 0.55rem 0.35rem;
 }
-.hours-enabled {
-  display: flex;
+.hours-status-button {
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.35rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
-.hours-enabled input {
-  width: 1.15rem;
-  height: 1.15rem;
-  margin: 0;
+.hours-status-button.is-open {
+  color: #0b5b40;
+  background: #dcf7e9;
+  border-color: #7bd3a8;
+  box-shadow: 0 0 0 2px #20a66a12;
 }
-.hours-enabled span:last-child {
-  display: inline;
+.hours-status-button.is-closed {
+  color: #8a2d34;
+  background: #fff0f1;
+  border-color: #e9aeb3;
+}
+.hours-status-button:hover {
+  filter: brightness(0.98);
+  box-shadow: 0 2px 8px #192b3a18;
+}
+.hours-status-button:focus-visible {
+  outline: 3px solid #176a6040;
+  outline-offset: 2px;
+}
+.hours-status-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
 }
 .form-actions {
   display: flex;
@@ -903,7 +932,7 @@ a:focus-visible {
     display: none;
   }
   .hours-day-row {
-    grid-template-columns: 1fr 4rem 1fr 1fr;
+    grid-template-columns: 1fr 7.25rem 1fr 1fr;
   }
   .hours-day-row label:nth-of-type(4),
   .hours-day-row label:nth-of-type(5) {
