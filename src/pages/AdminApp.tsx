@@ -1008,30 +1008,6 @@ function SettingsPage() {
           />
           <div className="two-col">
             <label>
-              Slide-tid (sekunder)
-              <input
-                type="number"
-                min="2"
-                max="300"
-                value={form.slideDuration}
-                onChange={(e) =>
-                  setForm({ ...form, slideDuration: +e.target.value })
-                }
-              />
-            </label>
-            <label>
-              Övergång (millisekunder)
-              <input
-                type="number"
-                min="0"
-                max="5000"
-                value={form.transitionDuration}
-                onChange={(e) =>
-                  setForm({ ...form, transitionDuration: +e.target.value })
-                }
-              />
-            </label>
-            <label>
               Rotationstid (sekunder)
               <input
                 type="number"
@@ -1044,28 +1020,6 @@ function SettingsPage() {
               />
             </label>
           </div>
-          <details>
-            <summary>Avancerat: bild-URL:er</summary>
-            <label>
-              Slides{" "}
-              <span className="label-help">En publik bild-URL per rad</span>
-              <textarea
-                rows={5}
-                value={form.slides.join("\n")}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    presentationId: "",
-                    presentationName: "",
-                    slides: e.target.value
-                      .split("\n")
-                      .map((s) => s.trim())
-                      .filter(Boolean),
-                  })
-                }
-              />
-            </label>
-          </details>
           <button className="button primary">Spara inställningar</button>
           {saved && (
             <span className="save-note" role="status">
